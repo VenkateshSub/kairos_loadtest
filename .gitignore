@@ -1,0 +1,16 @@
+*.ipr
+*.iws
+*.iml
+var/*
+target/*
+build/*
+*/target/*
+.gradle/*
+out/*
+dependency.txt
+.tablesawcache
+.idea
+log/*
+.DS_Store
+myivysettings.xml
+tablesaw.properties
