@@ -197,3 +197,5 @@ def buildSuccess(String target)
 {
 	printMessage("Build Success", target)
 }
+
+saw.setDefaultTarget("compile")
