@@ -2,9 +2,11 @@ package org.kairosdb.loadtest;
 
 
 import org.kairosdb.client.Client;
+import org.kairosdb.client.HttpClient;
 import org.kairosdb.client.TelnetClient;
 import org.kairosdb.client.builder.MetricBuilder;
 import org.kairosdb.client.builder.QueryBuilder;
+import org.kairosdb.client.builder.TimeUnit;
 import org.kairosdb.client.response.GetResponse;
 import org.kairosdb.client.response.QueryResponse;
 import org.kairosdb.client.response.Response;
@@ -16,9 +18,10 @@ import java.net.URISyntaxException;
 
 public class Main
 	{
+	private final HttpClient m_httpClient;
 	private TelnetClient m_telnetClient;
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, URISyntaxException
 		{
 		System.out.println("Hello");
 
@@ -27,12 +30,17 @@ public class Main
 		//Start 1 million load test
 		for (int rowCount = 1; rowCount < 16; rowCount ++)
 			{
-			main.loadTelnet("load_1million_"+rowCount+"_rows", rowCount, (1000000 / rowCount));
+			String metric = "load_1million_"+rowCount+"_rows";
+			main.loadTelnet(metric, rowCount, (1000000 / rowCount));
+			main.queryMetric(metric);
 			}
 
 		for (int rowCount = 16; rowCount <= 1024; rowCount *= 2)
 			{
-			main.loadTelnet("load_1million_"+rowCount+"_rows", rowCount, (1000000 / rowCount));
+			String metric = "load_1million_"+rowCount+"_rows";
+			main.loadTelnet(metric, rowCount, (1000000 / rowCount));
+
+			main.queryMetric(metric);
 			}
 
 		//main.loadTelnet("query_test_60k_big_tags", 60000, 10);
@@ -43,11 +51,26 @@ public class Main
 	public Main(String host, int port) throws IOException
 		{
 		m_telnetClient = new TelnetClient(host, port);
+		m_httpClient = new HttpClient("http://"+host+":"+port+"/api/v1");
 		}
 
 	public void close() throws IOException
 		{
 		m_telnetClient.shutdown();
+		}
+
+	public void queryMetric(String metricName) throws IOException, URISyntaxException
+		{
+		QueryBuilder qb = QueryBuilder.getInstance();
+
+		qb.addMetric(metricName);
+		qb.setStart(5, TimeUnit.MINUTES);
+
+		long start = System.currentTimeMillis();
+		m_httpClient.query(qb);
+		long end = System.currentTimeMillis();
+
+		System.out.println("Query: "+metricName+", "+(end - start));
 		}
 
 	public void loadTelnet(String metricName, long rows, long width) throws IOException
