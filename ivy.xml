@@ -6,6 +6,6 @@
 		<!--<conf name="test" extends="default"/>-->
 	</configurations>
 	<dependencies>
-		<dependency org="org.kairosdb" name="client" rev="2.0"/>
+		<dependency org="org.kairosdb" name="client" rev="2.1-SNAPSHOT"/>
 	</dependencies>
 </ivy-module>

@@ -151,7 +151,7 @@ new SimpleRule("run").setDescription("Runs kairosdb")
 
 def doRun(Rule rule)
 {
-	args = ""
+	args = "results.csv"
 	debug = ""
 	if (rule.getProperty("DEBUG"))
 		debug = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
