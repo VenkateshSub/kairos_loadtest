@@ -57,7 +57,7 @@ public class Main
 			{
 			RunData rd = new RunData(rowCount);
 			String metricName = "load_1million_"+rowCount+"_rows";
-			main.loadTelnet(metricName, rowCount, (LOAD_TEST_SIZE / rowCount));
+			rd.setLoadTime(main.loadTelnet(metricName, rowCount, (LOAD_TEST_SIZE / rowCount)));
 			Thread.sleep(2000);
 			main.queryMetric(metricName, rd);
 			printStream.println(rd.toString());
